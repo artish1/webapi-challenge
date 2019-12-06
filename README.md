@@ -40,13 +40,23 @@ Demonstrate your understanding of this Sprint's concepts by answering the follow
 
 - [ ] Mention two parts of Express that you learned about this week.
 
+  A) I learned about middleware and routers. Middleware are basically functions that run after the servers gets the request but before the endpoint route code for that request is run. Routers can be used to help differentiate and organize specific endpoints.
+
 - [ ] Describe Middleware?
+
+  A) Middleware is something that is run after the server gets the request but also runs before the endpoint route code is run. It can be useful for code that does a repeated action a lot, like verifying user credentials or checking the format of the request body.
 
 - [ ] Describe a Resource?
 
+  A) In an api, a resource is like a very limited object. It has all the CRUD operations (GET, PUT, DELETE, POST), and contains data for a specific topic.
+
 - [ ] What can the API return to help clients know if a request was successful?
 
+  A) The API can return status codes. The usual default status code for a successful request is `200` or anything in the range of `200-299`
+
 - [ ] How can we partition our application into sub-applications?
+
+  A) We can seperate endpoints into different routers that make sense for that router. Then put that router in a different file to import later.
 
 ## Minimum Viable Product
 
