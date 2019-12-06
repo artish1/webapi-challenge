@@ -16,7 +16,12 @@ router.get("/", (req, res) => {
     });
 });
 
-//Make new post
+//Get actions by id
+router.get("/:id", validateActionId, (req, res) => {
+  res.status(200).json(req.action);
+});
+
+//Make new action
 router.post("/", validateProjectId, (req, res) => {
   const body = req.body;
   if (!body.description || !body.notes) {
@@ -42,6 +47,24 @@ router.post("/", validateProjectId, (req, res) => {
     }
   }
 });
+
+function validateActionId(req, res, next) {
+  const id = req.params.id;
+  actionModel
+    .get(id)
+    .then(action => {
+      if (action) {
+        req.action = action;
+        next();
+      } else {
+        res.status(404).json({ error: "Could not find action by that id" });
+      }
+    })
+    .catch(err => {
+      console.log("Error verifying action by id", err);
+      res.status(500).json({ error: "Could not verify project by id" });
+    });
+}
 
 function validateProjectId(req, res, next) {
   if (req.body.project_id) {
