@@ -16,11 +16,25 @@ router.get("/", (req, res) => {
     });
 });
 
-//Get actions by id
+//Get action by id
 router.get("/:id", validateActionId, (req, res) => {
   res.status(200).json(req.action);
 });
 
+//Delete action by id
+router.delete("/:id", validateActionId, (req, res) => {
+  actionModel
+    .remove(req.params.id)
+    .then(removedRecords => {
+      res.status(200).json({ removedRecords });
+    })
+    .catch(err => {
+      console.log("Error trying to remove action", err);
+      res.status(500).json({ error: "Could not remove action" });
+    });
+});
+
+//Update actions by id
 router.put("/:id", validateActionId, (req, res) => {
   actionModel
     .update(req.params.id, req.body)
