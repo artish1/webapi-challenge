@@ -21,6 +21,19 @@ router.get("/:id", validateActionId, (req, res) => {
   res.status(200).json(req.action);
 });
 
+router.put("/:id", validateActionId, (req, res) => {
+  actionModel
+    .update(req.params.id, req.body)
+    .then(updatedRecord => {
+      console.log("Updated record: ", updatedRecord);
+      res.status(200).json(updatedRecord);
+    })
+    .catch(err => {
+      console.log("Error trying to update action", err);
+      res.status(500).json({ error: "Could not update action" });
+    });
+});
+
 //Make new action
 router.post("/", validateProjectId, (req, res) => {
   const body = req.body;
