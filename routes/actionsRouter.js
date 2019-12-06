@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const actionModel = require("../data/helpers/actionModel");
+const projectModel = require("../data/helpers/projectModel");
 
+//Get all actions
 router.get("/", (req, res) => {
   actionModel
     .get()
@@ -13,5 +15,55 @@ router.get("/", (req, res) => {
       res.status(500).json({ error: "Could not get all actions" });
     });
 });
+
+//Make new post
+router.post("/", validateProjectId, (req, res) => {
+  const body = req.body;
+  if (!body.description || !body.notes) {
+    res
+      .status(400)
+      .json({ error: "description and notes fields are required" });
+  } else {
+    //Check description length to not exceed 128 characters
+    if (body.description.length > 128) {
+      res
+        .status(400)
+        .json({ error: "description length cannot exceed 128 characters" });
+    } else {
+      actionModel
+        .insert(body)
+        .then(newAction => {
+          res.status(201).json(newAction);
+        })
+        .catch(err => {
+          console.log("Error making new action", err);
+          res.status(500).json({ error: "Could not make new action" });
+        });
+    }
+  }
+});
+
+function validateProjectId(req, res, next) {
+  if (req.body.project_id) {
+    projectModel
+      .get(req.body.project_id)
+      .then(project => {
+        if (project) {
+          req.project = project;
+          next();
+        } else {
+          res.status(404).json({ error: "Could not find project by that id" });
+        }
+      })
+      .catch(err => {
+        console.log("Error verifying project by id", err);
+        res
+          .status(500)
+          .json({ error: "There was an error verifying project by id" });
+      });
+  } else {
+    res.status(400).json({ error: "project_id field is required" });
+  }
+}
 
 module.exports = router;
