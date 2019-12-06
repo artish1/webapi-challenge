@@ -22,6 +22,37 @@ router.get("/:id", validateProjectId, (req, res) => {
   res.status(200).json(req.project);
 });
 
+//Create a new project
+router.post("/", (req, res) => {
+  const body = req.body;
+  if (!body.name || !body.description) {
+    res.status(400).json({ error: "name and description fields are required" });
+  } else {
+    projectModel
+      .insert(body)
+      .then(newProject => {
+        res.status(201).json(newProject);
+      })
+      .catch(err => {
+        console.log("Error creating new project", err);
+        res.status(500).json({ error: "Could not create project" });
+      });
+  }
+});
+
+//Edit project by id
+router.put("/:id", validateProjectId, (req, res) => {
+  projectModel
+    .update(req.params.id, req.body)
+    .then(updatedRecord => {
+      res.status(200).json({ updatedRecord });
+    })
+    .catch(err => {
+      console.log("Error, could not update project", err);
+      res.status(500).json({ error: "Could not update project" });
+    });
+});
+
 //Delete project by id
 router.delete("/:id", validateProjectId, (req, res) => {
   projectModel
